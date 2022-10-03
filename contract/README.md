@@ -1,12 +1,7 @@
 # Smart Contracts
-## Tooling with Foundry
-
 ## How to setup such a Foundry Project 
-```shell
-forge init --no-git --vscode
-```
 
-I learned from my last [project](https://github.com/yvesbou/NFT-Collection-LW3/tree/main/contract#third-party-libraries-in-foundry-project). That Foundry can be quite challenging in terms on managing the project and dependencies, if you used Hardhat before. But this short manual should help:
+I learned from my last [project](https://github.com/yvesbou/NFT-Collection-LW3/tree/main/contract#third-party-libraries-in-foundry-project) that Foundry can be quite challenging in terms on managing the project and dependencies, if you used Hardhat before. But this short manual should help:
 
 ### DApp with Foundry
 1. create project folder
@@ -29,4 +24,19 @@ I learned from my last [project](https://github.com/yvesbou/NFT-Collection-LW3/t
         "forge-std/=lib/forge-std/src/"
       ]
     ```
-8. 
+8. If you want to use OpenZeppelins Smart Contracts which in most cases you do
+    - `forge install OpenZeppelin/openzeppelin-contracts` 
+    - Update remappings inside `.vscode/settings.json`
+        ```
+        "solidity.remappings": [
+        "@openzeppelin/=lib/openzeppelin-contracts/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/"
+        ],
+        ```
+    - Update remappings inside `remappings.txt`
+        ```
+        ds-test/=lib/forge-std/lib/ds-test/src/
+        forge-std/=lib/forge-std/src/
+        @openzeppelin/=lib/openzeppelin-contracts/
+        ```
