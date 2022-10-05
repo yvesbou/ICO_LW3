@@ -12,6 +12,7 @@ contract CryptoDevToken is ERC20, Ownable {
 
     ICryptoDevs cryptoDevs;
 
+    // keep track of which nft was used to claim CD Tokens
     mapping(uint256 => bool) public tokenIdsClaimed;
 
     constructor(
@@ -22,12 +23,18 @@ contract CryptoDevToken is ERC20, Ownable {
         cryptoDevs = ICryptoDevs(cryptoDevsAddress);
     }
 
+    /**
+     * @dev this function allows NFT holders (CryptoDev collection) to
+     * get 10 tokens for free (but need to pay the gas of the transaction)
+     */
     function claim() external {
+        // checks if the user has NFTs
         uint256 nftsOwned = cryptoDevs.balanceOf(msg.sender);
         require(nftsOwned > 0, "You need a CryptoDev NFT to Claim Tokens");
 
         uint256 nftsUnclaimed = 0;
 
+        // makes sure that every NFT that is claimed is ticked off for eligibility
         for (uint256 index = 0; index < nftsOwned; index++) {
             uint256 tokenId = cryptoDevs.tokenOfOwnerByIndex(msg.sender, index);
             if (!tokenIdsClaimed[tokenId]) {
@@ -38,6 +45,7 @@ contract CryptoDevToken is ERC20, Ownable {
 
         require(nftsUnclaimed > 0, "You have claimed all your NFTs");
 
+        // if e.g 3 NFTs are unclaimed, the user gets 30 CD tokens
         uint256 amountToClaim = tokensPerNFT * nftsUnclaimed;
         uint256 currentSupply = totalSupply();
         require(
@@ -48,13 +56,20 @@ contract CryptoDevToken is ERC20, Ownable {
         _mint(msg.sender, amountToClaim);
     }
 
+    /**
+     * @dev this is the normal function to mint tokens
+     * requires the user to send enough ether to cover the
+     * price of each CD token of 0.001 ether.
+     */
     function mint(uint256 amount) external payable {
         require(amount > 0, "Amount needs to be greater than 0");
 
+        // check if enough ether send
         require(
             tokenPrice * amount >= msg.value,
             "Ether amount for minting tokens is not enough"
         );
+        // convert into decimals
         uint256 amountWithDecimals = amount * 10**18;
         require(
             (totalSupply() + amountWithDecimals) <= maxTotalSupply,
