@@ -77,4 +77,21 @@ contract CryptoDevToken is ERC20, Ownable {
         );
         _mint(msg.sender, amountWithDecimals);
     }
+
+    /**
+     * @dev this function is for the owner to withdraw the revenue from the ICO
+     * the owner receives ether.
+     */
+    function withdraw() external onlyOwner {
+        address _owner = owner();
+        uint256 amount = address(this).balance;
+        (bool sent, ) = _owner.call{value: amount}("Revenue from ICO CD Token");
+        require(sent, "Withdraw function execution failed.");
+    }
+
+    // Function to receive Ether if msg.data is empty
+    receive() external payable {}
+
+    // Fallback function is called when msg.data is not empty
+    fallback() external payable {}
 }
