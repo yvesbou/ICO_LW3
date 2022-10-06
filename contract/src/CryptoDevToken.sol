@@ -70,12 +70,12 @@ contract CryptoDevToken is ERC20, Ownable {
             "Ether amount for minting tokens is not enough"
         );
         // convert into decimals
-        uint256 amountWithDecimals = amount * 10**18;
+        // uint256 amountWithDecimals = amount * 10**18;
         require(
-            (totalSupply() + amountWithDecimals) <= maxTotalSupply,
+            (totalSupply() + amount) <= maxTotalSupply,
             "Exceeds the max total supply available."
         );
-        _mint(msg.sender, amountWithDecimals);
+        _mint(msg.sender, amount);
     }
 
     /**
