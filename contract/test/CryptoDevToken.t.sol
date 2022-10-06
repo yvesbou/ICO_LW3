@@ -82,4 +82,37 @@ contract CryptoDevTokenTest is Test {
         vm.expectRevert(bytes("The maximal supply of the token is 10,000"));
         cryptoDevToken.claim();
     }
+
+    function testMint() public {
+        address someRandomUser = vm.addr(1);
+        uint256 moneyNeededToBuyAllTokens = cryptoDevToken.tokenPrice() *
+            cryptoDevToken.maxTotalSupply();
+        emit log_uint(moneyNeededToBuyAllTokens);
+        vm.deal(someRandomUser, moneyNeededToBuyAllTokens);
+        vm.prank(someRandomUser);
+        // buys all the tokens
+        cryptoDevToken.mint(cryptoDevToken.maxTotalSupply());
+    }
+
+    function testMintZero() public {
+        address someRandomUser = vm.addr(1);
+        vm.deal(someRandomUser, 1 ether);
+        vm.prank(someRandomUser);
+        vm.expectRevert(bytes("Amount needs to be greater than 0"));
+        cryptoDevToken.mint(0);
+    }
+
+    // in progress, need solution for price,
+    // want to transform token to wei denomination before function execution
+    // stand now, tokenPrice is for each decimal (0.001 ether) for 10**(-18)
+    // what is common practice?
+    function testMintNotEnoughEtherSent() public {
+        uint256 priceForTenTokens = cryptoDevToken.tokenPrice() * 10 * 10**18;
+        emit log_uint(priceForTenTokens);
+        address someRandomUser = vm.addr(1);
+        vm.deal(someRandomUser, 1 ether);
+        vm.prank(someRandomUser);
+        vm.expectRevert(bytes("Amount needs to be greater than 0"));
+        cryptoDevToken.mint(0);
+    }
 }
