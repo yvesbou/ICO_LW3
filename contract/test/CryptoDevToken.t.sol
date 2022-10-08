@@ -117,20 +117,21 @@ contract CryptoDevTokenTest is Test {
         error: FAIL. Reason: Too many global rejects
         there are too many values of amount that don't
         satisfy the conditions set with assume
-        https://github.com/foundry-rs/foundry/issues/1202
+        related but not a solution: https://github.com/foundry-rs/foundry/issues/1202
+        conclusion: does not work with only small valid input space from large potential input space
      */
-    function testMintFuzzer(uint256 amount) public {
-        vm.assume(amount >= 10**18);
-        vm.assume(amount % 10**18 == 0);
-        vm.assume(amount <= cryptoDevToken.maxTotalSupply());
-        address someRandomUser = vm.addr(1);
-        uint256 moneyNeededToBuyTokens = computeEtherNeeded(amount);
-        emit log_uint(moneyNeededToBuyTokens);
-        vm.deal(someRandomUser, 1000 ether);
-        vm.prank(someRandomUser);
-        // buys all the tokens
-        cryptoDevToken.mint{value: moneyNeededToBuyTokens}(amount);
-    }
+    // function testMintFuzzer(uint256 amount) public {
+    //     vm.assume(amount >= 10**18);
+    //     vm.assume(amount % 10**18 == 0);
+    //     vm.assume(amount <= cryptoDevToken.maxTotalSupply());
+    //     address someRandomUser = vm.addr(1);
+    //     uint256 moneyNeededToBuyTokens = computeEtherNeeded(amount);
+    //     emit log_uint(moneyNeededToBuyTokens);
+    //     vm.deal(someRandomUser, 1000 ether);
+    //     vm.prank(someRandomUser);
+    //     // buys all the tokens
+    //     cryptoDevToken.mint{value: moneyNeededToBuyTokens}(amount);
+    // }
 
     function testMintBelowOffer() public {
         address someRandomUser = vm.addr(1);
