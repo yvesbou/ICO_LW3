@@ -59,18 +59,20 @@ contract CryptoDevToken is ERC20, Ownable {
     /**
      * @dev this is the normal function to mint tokens
      * requires the user to send enough ether to cover the
-     * price of each CD token of 0.001 ether.
+     * price of each CD token of 0.001 ether. Because of the ICO only full
+     * token (a multiply of 10**18, where the multiply is an integer)
+     * @param amount is in decimals 10**18 equals one CD Token
      */
     function mint(uint256 amount) external payable {
-        require(amount > 0, "Amount needs to be greater than 0");
-
-        // check if enough ether send
+        require(amount >= 10**18, "Amount needs to be at least 10**18.");
         require(
-            tokenPrice * amount >= msg.value,
+            amount % 10**18 == 0,
+            "Only full CD tokens are sold, no decimals."
+        );
+        require(
+            msg.value >= amount * tokenPrice,
             "Ether amount for minting tokens is not enough"
         );
-        // convert into decimals
-        // uint256 amountWithDecimals = amount * 10**18;
         require(
             (totalSupply() + amount) <= maxTotalSupply,
             "Exceeds the max total supply available."
