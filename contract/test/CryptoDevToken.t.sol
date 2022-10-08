@@ -29,6 +29,16 @@ contract CryptoDevTokenTest is Test {
     // Fallback function is called when msg.data is not empty
     fallback() external payable {}
 
+    function computeEtherNeeded(uint256 amount) public pure returns (uint256) {
+        require(amount >= 10**18, "Amount needs to be at least 10**18.");
+        require(
+            amount % 10**18 == 0,
+            "Only full CD tokens are sold, no decimals."
+        );
+        uint256 numberOfTokens = amount / 10**18;
+        return 0.001 ether * numberOfTokens;
+    }
+
     function setUp() public {
         string memory goerli_RPC_URL = vm.envString("GOERLI_RPC_URL");
         goerliFork = vm.createSelectFork(goerli_RPC_URL);
@@ -44,6 +54,7 @@ contract CryptoDevTokenTest is Test {
         vm.prank(nftOwners[0]);
         cryptoDevToken.claim();
         uint256 mintedTokens = cryptoDevToken.balanceOf(nftOwners[0]);
+        // 10 * 10**18 because address owns 1 NFT
         assertEq(mintedTokens, 10 * 10**18);
     }
 
@@ -58,6 +69,7 @@ contract CryptoDevTokenTest is Test {
         vm.prank(nftOwners[0]);
         cryptoDevToken.claim();
         uint256 mintedTokens = cryptoDevToken.balanceOf(nftOwners[0]);
+        // 10 * 10**18 because address owns 1 NFT
         assertEq(mintedTokens, 10 * 10**18);
 
         vm.prank(nftOwners[0]);
@@ -67,8 +79,9 @@ contract CryptoDevTokenTest is Test {
 
     function testClaimWhenSoldOut() public {
         address someRandomUser = vm.addr(1);
-        uint256 moneyNeededToBuyAllTokens = cryptoDevToken.tokenPrice() *
-            cryptoDevToken.maxTotalSupply();
+        uint256 moneyNeededToBuyAllTokens = computeEtherNeeded(
+            cryptoDevToken.maxTotalSupply()
+        );
         emit log_uint(moneyNeededToBuyAllTokens);
         vm.deal(someRandomUser, moneyNeededToBuyAllTokens);
 
@@ -76,7 +89,9 @@ contract CryptoDevTokenTest is Test {
         emit log_uint(currentSupply);
         assertEq(0, currentSupply);
         vm.prank(someRandomUser);
-        cryptoDevToken.mint(cryptoDevToken.maxTotalSupply());
+        cryptoDevToken.mint{value: moneyNeededToBuyAllTokens}(
+            cryptoDevToken.maxTotalSupply()
+        );
 
         vm.prank(nftOwners[0]);
         vm.expectRevert(bytes("The maximal supply of the token is 10,000"));
@@ -85,34 +100,35 @@ contract CryptoDevTokenTest is Test {
 
     function testMint() public {
         address someRandomUser = vm.addr(1);
-        uint256 moneyNeededToBuyAllTokens = cryptoDevToken.tokenPrice() *
-            cryptoDevToken.maxTotalSupply();
+        uint256 moneyNeededToBuyAllTokens = computeEtherNeeded(
+            cryptoDevToken.maxTotalSupply()
+        );
         emit log_uint(moneyNeededToBuyAllTokens);
         vm.deal(someRandomUser, moneyNeededToBuyAllTokens);
         vm.prank(someRandomUser);
         // buys all the tokens
-        cryptoDevToken.mint(cryptoDevToken.maxTotalSupply());
+        cryptoDevToken.mint{value: moneyNeededToBuyAllTokens}(
+            cryptoDevToken.maxTotalSupply()
+        );
     }
 
-    function testMintZero() public {
+    function testMintBelowOffer() public {
         address someRandomUser = vm.addr(1);
         vm.deal(someRandomUser, 1 ether);
         vm.prank(someRandomUser);
-        vm.expectRevert(bytes("Amount needs to be greater than 0"));
-        cryptoDevToken.mint(0);
+        vm.expectRevert(bytes("Amount needs to be at least 10**18."));
+        cryptoDevToken.mint{value: 0.0001 ether}(10**17);
     }
 
-    // in progress, need solution for price,
-    // want to transform token to wei denomination before function execution
-    // stand now, tokenPrice is for each decimal (0.001 ether) for 10**(-18)
-    // what is common practice?
     function testMintNotEnoughEtherSent() public {
-        uint256 priceForTenTokens = cryptoDevToken.tokenPrice() * 10 * 10**18;
+        uint256 priceForTenTokens = computeEtherNeeded(10 * 10**18);
         emit log_uint(priceForTenTokens);
         address someRandomUser = vm.addr(1);
-        vm.deal(someRandomUser, 1 ether);
+        // deal not enough such that function fails
+        uint256 notEnoughEther = priceForTenTokens - 1;
+        vm.deal(someRandomUser, notEnoughEther);
         vm.prank(someRandomUser);
-        vm.expectRevert(bytes("Amount needs to be greater than 0"));
-        cryptoDevToken.mint(0);
+        vm.expectRevert(bytes("Ether amount for minting tokens is not enough"));
+        cryptoDevToken.mint{value: notEnoughEther}(10 * 10**18);
     }
 }
