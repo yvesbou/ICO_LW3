@@ -112,12 +112,27 @@ contract CryptoDevTokenTest is Test {
         );
     }
 
+    /**
+        todo 
+        - withdraw
+        - fuzzing with mint
+     */
+
     function testMintBelowOffer() public {
         address someRandomUser = vm.addr(1);
         vm.deal(someRandomUser, 1 ether);
         vm.prank(someRandomUser);
         vm.expectRevert(bytes("Amount needs to be at least 10**18."));
         cryptoDevToken.mint{value: 0.0001 ether}(10**17);
+    }
+
+    function testDecimalToken() public {
+        address someRandomUser = vm.addr(1);
+        vm.deal(someRandomUser, 1 ether);
+        vm.prank(someRandomUser);
+        vm.expectRevert(bytes("Only full CD tokens are sold, no decimals."));
+        // ICO doesn't sell 5.5 CD Tokens
+        cryptoDevToken.mint{value: 0.0001 ether}(55 * 10**17);
     }
 
     function testMintNotEnoughEtherSent() public {
@@ -130,5 +145,40 @@ contract CryptoDevTokenTest is Test {
         vm.prank(someRandomUser);
         vm.expectRevert(bytes("Ether amount for minting tokens is not enough"));
         cryptoDevToken.mint{value: notEnoughEther}(10 * 10**18);
+    }
+
+    function testExceedingMaxSupply() public {
+        address someRandomUser = vm.addr(1);
+        uint256 moneyNeededToBuyAllTokens = computeEtherNeeded(
+            10 * cryptoDevToken.maxTotalSupply()
+        );
+        emit log_uint(moneyNeededToBuyAllTokens);
+        vm.deal(someRandomUser, moneyNeededToBuyAllTokens);
+        vm.prank(someRandomUser);
+        // buys all the tokens
+        cryptoDevToken.mint{value: moneyNeededToBuyAllTokens}(
+            cryptoDevToken.maxTotalSupply()
+        );
+        vm.prank(someRandomUser);
+        // try to buy just one other token
+        vm.expectRevert(bytes("Exceeds the max total supply available."));
+        cryptoDevToken.mint{value: 1 ether}(10**18);
+    }
+
+    function testWithdraw() public {
+        uint256 priceForTenTokens = computeEtherNeeded(10 * 10**18);
+        emit log_uint(priceForTenTokens);
+        address someRandomUser = vm.addr(1);
+        // deal not enough such that function fails
+        vm.deal(someRandomUser, priceForTenTokens);
+        vm.prank(someRandomUser);
+        cryptoDevToken.mint{value: priceForTenTokens}(10 * 10**18);
+
+        uint256 balance = address(cryptoDevToken).balance;
+        assertEq(balance, 0.01 ether);
+        cryptoDevToken.withdraw();
+
+        uint256 balanceEmpty = address(cryptoDevToken).balance;
+        assertEq(balanceEmpty, 0);
     }
 }
