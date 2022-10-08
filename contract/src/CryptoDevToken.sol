@@ -69,8 +69,9 @@ contract CryptoDevToken is ERC20, Ownable {
             amount % 10**18 == 0,
             "Only full CD tokens are sold, no decimals."
         );
+        uint256 numberOfTokens = amount / 10**18;
         require(
-            msg.value >= amount * tokenPrice,
+            msg.value >= numberOfTokens * tokenPrice,
             "Ether amount for minting tokens is not enough"
         );
         require(
