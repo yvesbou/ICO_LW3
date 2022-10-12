@@ -5,6 +5,9 @@ import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import {
   Navbar,
+  Card,
+  Row,
+  Col,
   Container,
   Button,
   Input,
@@ -20,7 +23,7 @@ const Home: NextPage = () => {
   const { theme } = useTheme();
 
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>NextUI | Create Next App</title>
         <meta
@@ -31,27 +34,29 @@ const Home: NextPage = () => {
       </Head>
 
       <Container
+        fluid
         as="main"
         display="flex"
         direction="column"
-        justify="center"
+        justify="flex-start"
         alignItems="center"
-        style={{ height: '100vh' }}
+        style={{ height: '100vh', margin: 0, width: '100vw'}}
+        css={{background: '#16181A'}}
+        // color="$colors$secondary" does not work
       >
  
-      <Navbar isCompact isBordered variant="sticky" style={{color: theme?.colors.secondary.value,
-          fontSize: theme?.fontSizes.sm.value,
-          padding: `${theme?.space[2].value} ${theme?.space[4].value}`}}>
+      <Navbar isCompact isBordered variant="static" style={{boxSizing: "border-box", margin: 0, maxWidth: '100%', color: theme?.colors.secondary.value,
+          fontSize: theme?.fontSizes.md.value, fontWeight: theme?.fontWeights.hairline.value,
+          padding: `${theme?.space['xs'].value} ${theme?.space[4].value}`}}>
         <Navbar.Brand>
-          <Text b color="inherit" hideIn="xs">
-            ACME
+          <Text b color="inherit" hideIn="xs" css={{font: theme?.fonts.sans, fontSize: theme?.fontSizes['4xl'].value, fontWeight: theme?.fontWeights.black.value}}>
+            CryptoDevs
           </Text>
         </Navbar.Brand>
-        <Navbar.Content hideIn="xs" variant="underline">
-          <Navbar.Link href="#">Features</Navbar.Link>
-          <Navbar.Link isActive href="#">Customers</Navbar.Link>
-          <Navbar.Link href="#">Pricing</Navbar.Link>
-          <Navbar.Link href="#">Company</Navbar.Link>
+        <Navbar.Content hideIn="xs" variant="highlight-rounded">
+          <Navbar.Link isActive href="#">Whitelist</Navbar.Link>
+          <Navbar.Link href="#">NFT Drop</Navbar.Link>
+          <Navbar.Link href="#">Smart Contracts</Navbar.Link>
         </Navbar.Content>
         <Navbar.Content>
           <Navbar.Item>
@@ -62,37 +67,30 @@ const Home: NextPage = () => {
  
         <Spacer />
         <Spacer />
-        <Text h1 className={styles.title}>
-          Welcome to&nbsp;
-          <Link
-            href="https://nextjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Next.js
-          </Link>
-          &nbsp;&nbsp;
-          <Link
-            href="https://nextui.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            NextUI
-          </Link>
-        </Text>
-        <Spacer />
-        <Input clearable labelPlaceholder="Type something" />
-        <Spacer />
-        <Button>
-          <a
-            className={styles.button}
-            href="https://github.com/nextui-org/nextui"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Show on Github
-          </a>
-        </Button>
+        <Container xl>
+          
+          <Card css={{ $$cardColor: 'black', mw: "600px", minw: "400px"}}>
+            <Card.Header css={{  position: "static", zIndex: 1, top: 5 }}>
+              <Col>
+                <Text size={12} weight="bold" transform="uppercase" color="#ffffffAA">
+                  Initial Coin Offering
+                </Text>
+                <Text h4 color="white">
+                  Buy CryptoDevs Tokens
+                </Text>
+              </Col>
+            </Card.Header>
+            <Card.Body>
+              <Row justify="center" align="center">
+                <Text h6 size={15} color="white" css={{ m: 0 }}>
+                  NextUI gives you the best developer experience with all the features
+                  you need for building beautiful and modern websites and
+                  applications.
+                </Text>
+              </Row>
+            </Card.Body>
+        </Card>
+        </Container>
       </Container>
     </div>
   );
