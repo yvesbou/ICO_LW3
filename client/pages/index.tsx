@@ -35,6 +35,7 @@ const Home: NextPage = () => {
 
       <Container
         fluid
+        responsive={false}
         as="main"
         display="flex"
         direction="column"
@@ -44,30 +45,38 @@ const Home: NextPage = () => {
         css={{background: '#16181A'}}
         // color="$colors$secondary" does not work
       >
- 
-      <Navbar isCompact isBordered variant="static" style={{boxSizing: "border-box", margin: 0, maxWidth: '100%', color: theme?.colors.secondary.value,
-          fontSize: theme?.fontSizes.md.value, fontWeight: theme?.fontWeights.hairline.value,
-          padding: `${theme?.space['xs'].value} ${theme?.space[4].value}`}}>
-        <Navbar.Brand>
-          <Text b color="inherit" hideIn="xs" css={{font: theme?.fonts.sans, fontSize: theme?.fontSizes['4xl'].value, fontWeight: theme?.fontWeights.black.value}}>
-            CryptoDevs
-          </Text>
-        </Navbar.Brand>
-        <Navbar.Content hideIn="xs" variant="highlight-rounded">
-          <Navbar.Link isActive href="#">Whitelist</Navbar.Link>
-          <Navbar.Link href="#">NFT Drop</Navbar.Link>
-          <Navbar.Link href="#">Smart Contracts</Navbar.Link>
-        </Navbar.Content>
-        <Navbar.Content>
-          <Navbar.Item>
-            <ConnectButton/>
-          </Navbar.Item>
-        </Navbar.Content>
-      </Navbar>
+      
+        
+          <Navbar isCompact disableBlur maxWidth="fluid" variant="static" style={{boxSizing: "border-box", margin: 0, color: 'white',
+              fontSize: theme?.fontSizes.md.value, fontWeight: theme?.fontWeights.hairline.value
+              }} containerCss={{backgroundColor: 'black'}}>
+            <Navbar.Brand>
+              <Text b color="inherit" hideIn="xs" css={{font: theme?.fonts.sans, fontSize: theme?.fontSizes['4xl'].value, fontWeight: theme?.fontWeights.black.value}}>
+                CryptoDevs
+              </Text>
+            </Navbar.Brand>
+            <Navbar.Content hideIn="xs" variant="highlight-rounded">
+              <Navbar.Link isActive href="#">Whitelist</Navbar.Link>
+              <Navbar.Link href="#">NFT Drop</Navbar.Link>
+              <Navbar.Link href="#">Smart Contracts</Navbar.Link>
+            </Navbar.Content>
+            <Navbar.Content>
+              <Navbar.Item>
+                <ConnectButton/>
+              </Navbar.Item>
+            </Navbar.Content>
+          </Navbar>
+        
  
         <Spacer />
         <Spacer />
         <Container xl>
+
+          {/* todo:
+                - center the card
+                - add input field
+                - buy button
+          */}
           
           <Card css={{ $$cardColor: 'black', mw: "600px", minw: "400px"}}>
             <Card.Header css={{  position: "static", zIndex: 1, top: 5 }}>
