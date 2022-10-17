@@ -14,13 +14,15 @@ import {
   Spacer,
   Text,
   Link,
-  useTheme
+  useTheme, Switch
 } from '@nextui-org/react';
+import { useTheme as useNextTheme } from 'next-themes'
 
 
 const Home: NextPage = () => {
 
-  const { theme } = useTheme();
+  const { setTheme } = useNextTheme();
+  const { isDark, theme } = useTheme();
 
   return (
     <div>
@@ -42,12 +44,12 @@ const Home: NextPage = () => {
         justify="flex-start"
         alignItems="center"
         style={{ height: '100vh', margin: 0, width: '100vw'}}
-        css={{background: '#16181A'}}
+        css={{background: '#16181A', padding: 0 }}
         // color="$colors$secondary" does not work
       >
       
         
-          <Navbar isCompact disableBlur maxWidth="fluid" variant="static" style={{boxSizing: "border-box", margin: 0, color: 'white',
+          <Navbar disableBlur maxWidth="fluid" variant="static" style={{boxSizing: "border-box", margin: 0, color: 'white',
               fontSize: theme?.fontSizes.md.value, fontWeight: theme?.fontWeights.hairline.value
               }} containerCss={{backgroundColor: 'black'}}>
             <Navbar.Brand>
@@ -61,6 +63,12 @@ const Home: NextPage = () => {
               <Navbar.Link href="#">Smart Contracts</Navbar.Link>
             </Navbar.Content>
             <Navbar.Content>
+            <Navbar.Item>
+            <Switch
+                checked={isDark}
+                onChange={(e) => setTheme(e.target.checked ? 'dark' : 'light')}
+              />
+              </Navbar.Item>
               <Navbar.Item>
                 <ConnectButton/>
               </Navbar.Item>

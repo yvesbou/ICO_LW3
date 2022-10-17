@@ -1,11 +1,27 @@
 import '../styles/globals.css';
 import '@rainbow-me/rainbowkit/styles.css';
-import { NextUIProvider } from '@nextui-org/react';
 import type { AppProps } from 'next/app';
 import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
+import { createTheme, NextUIProvider } from "@nextui-org/react"
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+
+// 2. Call `createTheme` and pass your custom values
+const lightTheme = createTheme({
+  type: 'light',
+  // theme: {
+  //   colors: {...}, // optional
+  // }
+})
+
+const darkTheme = createTheme({
+  type: 'dark',
+  // theme: {
+  //   colors: {...}, // optional
+  // }
+})
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
@@ -43,9 +59,18 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>
-        <NextUIProvider>
-        <Component {...pageProps} />
-        </NextUIProvider>
+        <NextThemesProvider
+          defaultTheme="system"
+          attribute="class"
+          value={{
+            light: lightTheme.className,
+            dark: darkTheme.className
+          }}
+        >
+          <NextUIProvider>
+            <Component {...pageProps} />
+          </NextUIProvider>
+        </NextThemesProvider>
       </RainbowKitProvider>
     </WagmiConfig>
   );
