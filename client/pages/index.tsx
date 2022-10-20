@@ -44,14 +44,14 @@ const Home: NextPage = () => {
         justify="flex-start"
         alignItems="center"
         style={{ height: '100vh', margin: 0, width: '100vw'}}
-        css={{background: '#16181A', padding: 0 }}
+        css={{background: theme?.colors.background.value, padding: 0 }}
         // color="$colors$secondary" does not work
       >
       
         
-          <Navbar disableBlur maxWidth="fluid" variant="static" style={{boxSizing: "border-box", margin: 0, color: 'white',
+          <Navbar disableBlur maxWidth="fluid" variant="static" style={{boxSizing: "border-box", margin: 0, color: theme?.colors.text.value,
               fontSize: theme?.fontSizes.md.value, fontWeight: theme?.fontWeights.hairline.value
-              }} containerCss={{backgroundColor: 'black'}}>
+              }} containerCss={{backgroundColor: theme?.colors.secondary.value}}>
             <Navbar.Brand>
               <Text b color="inherit" hideIn="xs" css={{font: theme?.fonts.sans, fontSize: theme?.fontSizes['4xl'].value, fontWeight: theme?.fontWeights.black.value}}>
                 CryptoDevs
@@ -86,20 +86,20 @@ const Home: NextPage = () => {
                 - buy button
           */}
           
-          <Card css={{ $$cardColor: 'black', mw: "600px", minw: "400px"}}>
+          <Card css={{ $$cardColor: theme?.colors.secondary.value, mw: "600px", minw: "400px", boxShadow: `1px 1px 10px ${theme?.colors.primaryShadow.value}`}}>
             <Card.Header css={{  position: "static", zIndex: 1, top: 5 }}>
               <Col>
                 <Text size={12} weight="bold" transform="uppercase" color="#ffffffAA">
                   Initial Coin Offering
                 </Text>
-                <Text h4 color="white">
+                <Text h4 color={theme?.colors.text.value}>
                   Buy CryptoDevs Tokens
                 </Text>
               </Col>
             </Card.Header>
             <Card.Body>
               <Row justify="center" align="center">
-                <Text h6 size={15} color="white" css={{ m: 0 }}>
+                <Text h6 size={15} color={theme?.colors.text.value} css={{ m: 0 }}>
                   NextUI gives you the best developer experience with all the features
                   you need for building beautiful and modern websites and
                   applications.
