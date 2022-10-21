@@ -1,4 +1,4 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import ConnectWallet from '../components/Connect';
 import type { NextPage } from 'next';
 import Image from 'next/image';
 import Head from 'next/head';
@@ -14,7 +14,8 @@ import {
   Spacer,
   Text,
   Link,
-  useTheme, Switch
+  useTheme,
+  Switch
 } from '@nextui-org/react';
 import { useTheme as useNextTheme } from 'next-themes'
 
@@ -57,8 +58,8 @@ const Home: NextPage = () => {
                 CryptoDevs
               </Text>
             </Navbar.Brand>
-            <Navbar.Content hideIn="xs" variant="highlight-rounded">
-              <Navbar.Link isActive href="#">Whitelist</Navbar.Link>
+            <Navbar.Content hideIn="xs" >
+              <Navbar.Link href="#">Whitelist</Navbar.Link>
               <Navbar.Link href="#">NFT Drop</Navbar.Link>
               <Navbar.Link href="#">Smart Contracts</Navbar.Link>
             </Navbar.Content>
@@ -70,7 +71,7 @@ const Home: NextPage = () => {
               />
               </Navbar.Item>
               <Navbar.Item>
-                <ConnectButton/>
+                <ConnectWallet/>
               </Navbar.Item>
             </Navbar.Content>
           </Navbar>
